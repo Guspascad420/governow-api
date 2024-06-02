@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize")
  
 // create connection
-const db = new Sequelize('DATABASE_NAME', 'root', 'password', {
+const db = new Sequelize('governow', 'root', 'gajelas2', {
     host: 'localhost',
     dialect: 'mysql'
 });
