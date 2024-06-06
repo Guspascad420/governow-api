@@ -27,7 +27,7 @@ const login = async (req, res) => {
             return res.status(401).json({ error: 'Authentication failed' });
         }
         const token = jwt.sign({ userId: snapshot.docs[0].id }, process.env.JWT_SECRET_KEY);
-        res.status(200).json({ token });
+        res.status(201).json({ token });
     } catch (error) {
         res.status(500).json({ error: 'Login failed', message: error.message });
     }
@@ -39,7 +39,7 @@ const getProfile = async (req, res) => {
         const decodedClaims = JSON.parse(atob(bearerToken.split('.')[1]))
         const doc = await db.collection('users').doc(decodedClaims.userId).get()
         const data = doc.data()
-        res.status(200).json(data);
+        res.status(200).json({message: "successfully retrieved profile", data});
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve profile', message: error.message });
     }
