@@ -5,7 +5,7 @@ const {
   getLeaderByIdHandler,
   editLeaderByIdHandler,
   deleteLeaderByIdHandler,
-} = require('../utils/leader.handler');
+} = require('../handler/leader.handler');
 
 const router = express.Router()
 
