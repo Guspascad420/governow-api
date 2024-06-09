@@ -5,6 +5,7 @@ const imgUpload = require('./utils/imgUpload')
 const leaderRoutes = require('./routes/leader.routes'); 
 const Multer = require('multer')
 const app = express()
+const leaders = require('./routes/leader.routes')
 
 const multer = Multer({
     storage: Multer.MemoryStorage,
@@ -15,12 +16,14 @@ require('dotenv').config()
 const port = process.env.PORT
 
 app.use(express.json())
+app.use(leaders)
 
 app.post('/user/register', register)
 app.post('/user/login', login);
 app.get('/user/profile', getProfile)
 app.post('/post/create', createPost)
 app.post('/aspirations', multer.single('attachment'), imgUpload.uploadToGcs,  createAspiration)
+
 
 app.use('/', leaderRoutes); // routes untuk leader
 

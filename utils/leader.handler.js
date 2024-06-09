@@ -28,7 +28,7 @@ const uploadImage = async (file) => {
 };
 
 // Handler untuk menambah leader
-const addLeaderHandler = async (request, h) => {
+const addLeaderHandler = async (request, res) => {
     const { fullname, email, work_plan, position } = request.payload; // Menambahkan position ke payload
     const file = request.payload.image_profile;
     const id = nanoid(16);
@@ -44,27 +44,15 @@ const addLeaderHandler = async (request, h) => {
             image_profile: imageUrl,
         });
 
-        const response = h.response({
-            status: 'success',
-            message: 'Leader berhasil ditambahkan',
-            data: {
-                leaderId: id,
-            },
-        });
-        response.code(201);
+        res.status(201).json({message: "successfully added leader", data});
         return response;
     } catch (error) {
-        const response = h.response({
-            status: 'fail',
-            message: `Leader gagal ditambahkan: ${error}`,
-        });
-        response.code(500);
-        return response;
+        res.status(500).json({status: 'fail', message: `Leader gagal ditambahkan: ${error}`})
     }
 };
 
 // Handler untuk mendapatkan semua leader
-const getAllLeadersHandler = async (request, h) => {
+const getAllLeadersHandler = async (request, res) => {
     try {
         const snapshot = await firestore.collection(collectionName).get();
         const leaders = [];
@@ -75,61 +63,31 @@ const getAllLeadersHandler = async (request, h) => {
                 ...doc.data(),
             });
         });
-
-        const response = h.response({
-            status: 'success',
-            data: {
-                leaders,
-            },
-        });
-        response.code(200);
-        return response;
+        res.status(200).json({message: 'success', data: leaders})
     } catch (error) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal mengambil data leader',
-        });
-        response.code(500);
-        return response;
+        res.status(500).json({error: 'Gagal mengambil data leader', message: error.message})
     }
 };
 
 // Handler untuk mendapatkan leader berdasarkan ID
-const getLeaderByIdHandler = async (request, h) => {
+const getLeaderByIdHandler = async (request, res) => {
     const { id } = request.params;
 
     try {
         const doc = await firestore.collection(collectionName).doc(id).get();
 
         if (!doc.exists) {
-            const response = h.response({
-                status: 'fail',
-                message: 'Leader tidak ditemukan',
-            });
-            response.code(404);
-            return response;
+            res.status(404).json({error: 'fail', message: 'Leader tidak ditemukan'})
         }
 
-        const response = h.response({
-            status: 'success',
-            data: {
-                leader: doc.data(),
-            },
-        });
-        response.code(200);
-        return response;
+        res.status(200).json({message: 'success', data: doc.data()})
     } catch (error) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal mengambil data leader',
-        });
-        response.code(500);
-        return response;
+        res.status(500).json({error: 'Gagal mengambil data leader', message: error.message})
     }
 };
 
 // Handler untuk mengubah leader berdasarkan ID
-const editLeaderByIdHandler = async (request, h) => {
+const editLeaderByIdHandler = async (request, res) => {
     const { id } = request.params;
     const { fullname, email, work_plan, position, image_profile } = request.payload; // Menambahkan position ke payload
 
@@ -139,12 +97,7 @@ const editLeaderByIdHandler = async (request, h) => {
         const leader = await doc.get();
 
         if (!leader.exists) {
-            const response = h.response({
-                status: 'fail',
-                message: 'Gagal memperbarui leader. Id tidak ditemukan',
-            });
-            response.code(404);
-            return response;
+            res.status(404).json({status: 'fail', message: 'Gagal memperbarui leader. Id tidak ditemukan'})
         }
 
         await doc.update({
@@ -155,19 +108,9 @@ const editLeaderByIdHandler = async (request, h) => {
             image_profile,
         });
 
-        const response = h.response({
-            status: 'success',
-            message: 'Leader berhasil diperbarui',
-        });
-        response.code(200);
-        return response;
+        res.status(200).json({message: 'Leader berhasil diperbarui', status: 'success'})
     } catch (error) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal memperbarui leader',
-        });
-        response.code(500);
-        return response;
+        res.status(500).json({message: 'Gagal memperbarui Leader', status: 'fail'})
     }
 };
 
@@ -181,29 +124,14 @@ const deleteLeaderByIdHandler = async (request, h) => {
         const leader = await doc.get();
 
         if (!leader.exists) {
-            const response = h.response({
-                status: 'fail',
-                message: 'Gagal menghapus leader. Id tidak ditemukan',
-            });
-            response.code(404);
-            return response;
+            res.status(404).json({status: 'fail', message: 'Id not found'})
         }
 
         await doc.delete();
 
-        const response = h.response({
-            status: 'success',
-            message: 'Leader berhasil dihapus',
-        });
-        response.code(200);
-        return response;
+        res.status(200).json({status: 'success', message: 'Successfully removed leader'})
     } catch (error) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal menghapus leader',
-        });
-        response.code(500);
-        return response;
+        res.status(500).json({status: 'fail', message: 'Failed deleting leader'})
     }
 };
 
