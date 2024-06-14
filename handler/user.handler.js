@@ -18,7 +18,6 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const snapshot = await db.collection('users').where('email', '==', email).get()
         const user = snapshot.docs[0].data()
-        console.log(user)
         if (!user) {
             return res.status(401).json({ error: 'Authentication failed' });
         }
@@ -38,8 +37,11 @@ const getProfile = async (req, res) => {
         const bearerToken = req.get("Authorization").split(' ')[1]
         const decodedClaims = JSON.parse(atob(bearerToken.split('.')[1]))
         const doc = await db.collection('users').doc(decodedClaims.userId).get()
-        const data = doc.data()
-        res.status(200).json({message: "successfully retrieved profile", data});
+        const profile = doc.data()
+        res.status(200).json({
+            message: "successfully retrieved profile", 
+            data: {"fullName": profile.fullName, "username": profile.username, "email": profile.email}
+        });
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve profile', message: error.message });
     }
