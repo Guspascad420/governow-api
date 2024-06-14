@@ -4,7 +4,7 @@ const { register, login, getProfile } = require('./handler/user.handler')
 const imgUpload = require('./utils/imgUpload')
 const Multer = require('multer')
 const app = express()
-const leaders = require('./routes/leader.routes')
+const leaders = require('./routes/leader.routes') 
 
 const multer = Multer({
     storage: Multer.MemoryStorage,
