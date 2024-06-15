@@ -1,10 +1,10 @@
 const express = require('express')
 const { createAspiration, createPost, getAllPosts, getAllAspirations } = require('./handler/basic.handler')
-const { register, login, getProfile } = require('./handler/user.handler')
 const imgUpload = require('./utils/imgUpload')
 const Multer = require('multer')
 const app = express()
-const leaders = require('./routes/leader.routes') 
+const leaders = require('./routes/leader.routes')
+const user = require('./routes/user.routes')
 
 const multer = Multer({
     storage: Multer.MemoryStorage,
@@ -16,10 +16,8 @@ const port = process.env.PORT
 
 app.use(express.json())
 app.use(leaders)
+app.use(user)
 
-app.post('/user/register', register)
-app.post('/user/login', login);
-app.get('/user/profile', getProfile)
 app.get('/post/all', getAllPosts)
 app.get('/aspirations/all', getAllAspirations)
 app.post('/post/create', createPost)

@@ -16,7 +16,7 @@ const uploadProfileImage = async (file) => {
 
     return new Promise((resolve, reject) => {
         blobStream.on('finish', () => {
-            const publicUrl = `https://storage.googleapis.com/${bucketName}/${blob.name}`;
+            const publicUrl = `https://storage.googleapis.com/${bucketName}/profile_pictures/${blob.name}`;
             resolve(publicUrl);
         }).on('error', (err) => {
             reject(err);
@@ -34,28 +34,13 @@ const setProfileImage = async (req, res) => {
         }
 
         const publicUrl = await uploadProfileImage(file);
-        const docRef = await db.collection('edit_profile').add({
+        await db.collection('users').update({
             profile_image: publicUrl,
         });
 
-        res.status(200).send({ id: docRef.id, profile_image: publicUrl });
+        res.status(200).send({ message: 'successfully set profile picture', profile_image: publicUrl });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).send(error.message);
-    }
-};
-
-// Get profile image by ID
-const getProfileImage = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const doc = await db.collection('edit_profile').doc(id).get();
-        if (!doc.exists) {
-            return res.status(404).send('Profile image not found.');
-        }
-
-        res.status(200).send(doc.data());
-    } catch (error) {
         res.status(500).send(error.message);
     }
 };
@@ -63,17 +48,17 @@ const getProfileImage = async (req, res) => {
 // Delete profile image by ID
 const deleteProfileImage = async (req, res) => {
     try {
-        const { id } = req.params;
-        const doc = await db.collection('edit_profile').doc(id).get();
-        if (!doc.exists) {
-            return res.status(404).send('Profile image not found.');
-        }
+        const bearerToken = req.get("Authorization").split(' ')[1]
+        const decodedClaims = JSON.parse(atob(bearerToken.split('.')[1]))
+        const doc = await db.collection('users').doc(decodedClaims.userId).get()
 
-        const { profile_image } = doc.data();
-        const fileName = profile_image.split('/').pop();
+        const profile = doc.data();
+        const fileName = profile.profile_image.split('/').pop();
         await bucket.file(fileName).delete();
 
-        await db.collection('edit_profile').doc(id).delete();
+        await db.collection('user').doc(decodedClaims.userId).update({
+            profile_image: publicUrl,
+        })
 
         res.status(200).send('Profile image deleted.');
     } catch (error) {
@@ -83,6 +68,5 @@ const deleteProfileImage = async (req, res) => {
 
 module.exports = {
     setProfileImage,
-    getProfileImage,
     deleteProfileImage,
 };
