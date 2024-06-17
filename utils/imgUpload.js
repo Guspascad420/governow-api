@@ -4,7 +4,7 @@ const fs = require('fs')
 const dateFormat = require('dateformat')
 const path = require('path');
 
-const pathKey = path.resolve('../serviceaccountkey.json')
+const pathKey = path.resolve('./serviceaccountkey.json')
 
 // TODO: Sesuaikan konfigurasi Storage
 const gcs = new Storage({
@@ -41,7 +41,6 @@ ImgUpload.uploadToGcs = (req, res, next) => {
 
     stream.on('finish', () => {
         req.file.cloudStorageObject = gcsname
-        console.log('sjkssj')
         req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
         next()
     })

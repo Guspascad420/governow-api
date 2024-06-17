@@ -15,8 +15,8 @@ require('dotenv').config()
 const port = process.env.PORT
 
 app.use(express.json())
-app.use(leaders)
-app.use(user)
+app.use('leaders', leaders)
+app.use('/user', user)
 
 app.get('/post/all', getAllPosts)
 app.get('/aspirations/all', getAllAspirations)
