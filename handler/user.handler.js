@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const db = require('../config/database')
+const { Storage } = require('@google-cloud/storage');
+const bucketName = 'governow';
+const storage = new Storage();
+const bucket = storage.bucket(bucketName);
 
 const register = async (req, res) => {
     try {
@@ -46,14 +50,6 @@ const getProfile = async (req, res) => {
         res.status(500).json({ error: 'Failed to retrieve profile', message: error.message });
     }
 }
-
-const { Storage } = require('@google-cloud/storage');
-const db = require('../config/database');
-const bucketName = 'governow';
-
-// Initialize Cloud Storage
-const storage = new Storage();
-const bucket = storage.bucket(bucketName);
 
 // Create or update profile image
 const setProfileImage = async (req, res) => {
