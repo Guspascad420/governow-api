@@ -1,12 +1,8 @@
-const path = require('path');
-const pathKey = path.resolve('./serviceaccountkey.json')
+require('dotenv').config()
 const Firestore = require('@google-cloud/firestore');
 
 // create connection
-const db = new Firestore({
-    projectId: 'bangkit-capstone-425011',
-    keyFilename: pathKey,
-});
+const db = new Firestore();
 
 // export connection
 module.exports = db

@@ -1,3 +1,4 @@
 .env
 script.sql
 node_modules
+serviceaccountkey.json

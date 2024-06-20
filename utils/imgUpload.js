@@ -1,16 +1,9 @@
 'use strict'
 const {Storage} = require('@google-cloud/storage')
-const fs = require('fs')
 const dateFormat = require('dateformat')
-const path = require('path');
-
-const pathKey = path.resolve('./serviceaccountkey.json')
 
 // TODO: Sesuaikan konfigurasi Storage
-const gcs = new Storage({
-    projectId: 'governow',
-    keyFilename: pathKey
-})
+const gcs = new Storage()
 
 // TODO: Tambahkan nama bucket yang digunakan
 const bucketName = 'governow'
