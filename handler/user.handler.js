@@ -66,7 +66,6 @@ const setProfileImage = async (req, res) => {
         if (req.file && req.file.cloudStoragePublicUrl) {
             imageUrl = req.file.cloudStoragePublicUrl
         }
-        console.log('uuhh: ' + imageUrl)
 
         await db.collection('users').doc(decodedClaims.userId).update({
             profile_image: imageUrl,
