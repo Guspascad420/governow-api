@@ -33,7 +33,9 @@ const getAllPosts = async (req, res) => {
         const snapshot = await db.collection('posts').get()
         const data = []
         snapshot.forEach(doc => {
-            data.push(doc.data())
+            const post = doc.data()
+            post.id = doc.id
+            data.push(post)
         })
         res.status(200).json({message: 'successfully get all posts', data})
     } catch (error) {
@@ -70,6 +72,14 @@ const createAspiration = async (req, res) => {
     }
 }
 
+const getPost = async (req, res) => {
+    const id = req.params.id
+    const doc = await db.collection('posts').doc(id).get()
+    const data = doc.data()
+
+    res.status(200).json({message: 'successfully get post', data})
+}
+
 const createPost = async (req, res) => {
     try {
         const bearerToken = req.get("Authorization").split(' ')[1]
@@ -101,5 +111,5 @@ const postPredictHandler = async (req, res) => {
 
 
 
-module.exports = { getAllAspirations, getAllPosts, createAspiration, 
+module.exports = { getAllAspirations, getAllPosts, createAspiration, getPost,
     createPost, getAllNews, postPredictHandler, updatePoll }
