@@ -41,6 +41,18 @@ const getAllPosts = async (req, res) => {
     }
 }
 
+const updatePoll = async (req, res) => {
+    try {
+        const updatedPoll = req.body.updatedPoll
+        await db.collection('posts').doc(req.params.id).update({
+            polls: updatedPoll,
+        })
+        res.status(200).send({ message: 'successfully updated poll'});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 const createAspiration = async (req, res) => {
     try {
         let imageUrl = ''
@@ -87,4 +99,5 @@ const postPredictHandler = async (req, res) => {
 
 
 
-module.exports = { getAllAspirations, getAllPosts, createAspiration, createPost, getAllNews, postPredictHandler }
+module.exports = { getAllAspirations, getAllPosts, createAspiration, 
+    createPost, getAllNews, postPredictHandler, updatePoll }

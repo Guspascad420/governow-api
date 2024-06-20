@@ -1,6 +1,6 @@
 const express = require('express')
 const { createAspiration, createPost, getAllPosts, 
-    getAllAspirations, getAllNews, postPredictHandler } = require('./handler/basic.handler')
+    getAllAspirations, getAllNews, postPredictHandler, updatePoll } = require('./handler/basic.handler')
 const imgUpload = require('./utils/imgUpload')
 const Multer = require('multer')
 const app = express()
@@ -20,6 +20,7 @@ app.use('leaders', leaders)
 app.use('/user', user)
 
 app.get('/post/all', getAllPosts)
+app.put('/post/:id/poll/update', updatePoll)
 app.get('/aspirations/all', getAllAspirations)
 app.get('/news/all', getAllNews)
 app.post('/post/create', createPost)
