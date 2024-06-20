@@ -60,8 +60,10 @@ const createAspiration = async (req, res) => {
             imageUrl = req.file.cloudStoragePublicUrl
         }
         req.body.imageUrl = imageUrl
+        const category = await predictClassification(req.body.contents)
+        req.body.category = category
         await db.collection('aspirations').add(req.body)
-        res.status(201).json({message: 'successfully created aspiration'})
+        res.status(201).json({message: 'successfully created aspiration', data: req.body})
 
     } catch (error) {
         res.status(500).json({ error: 'Post failed', message: error.message });
